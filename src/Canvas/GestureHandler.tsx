@@ -6,7 +6,16 @@ import {
 } from "react-native-gesture-handler";
 import type { SharedValue } from "react-native-reanimated";
 import { useSharedValue } from "react-native-reanimated";
-import { rotateZ, scale, translate } from "./MatrixHelpers";
+import {
+  applyTransform,
+  invertTransform,
+  rotateZ,
+  scale,
+  translate,
+  zoomAroundPoint,
+} from "./utils";
+import { View } from "react-native";
+import { useCallback } from "react";
 
 interface GestureHandlerProps {
   matrix: SharedValue<SkMatrix>;
@@ -37,11 +46,30 @@ export const GestureHandler = ({ matrix, children }: GestureHandlerProps) => {
     .onChange((event) => {
       matrix.value = rotateZ(offset.value, event.rotation, pivot.value);
     });
+  const longTap = Gesture.LongPress().onEnd((event) => {
+    console.log("long tap", event);
+  });
+
   const gesture = Gesture.Race(pan, pinch, rotate);
+
+  const onWheel = useCallback(
+    (event: WheelEvent) => {
+      const dz = event.deltaY > 0 ? 0.9 : 1.1;
+      pivot.value = invertTransform(
+        matrix.value,
+        vec(event.clientX, event.clientY)
+      );
+      matrix.value = zoomAroundPoint(matrix.value, dz, pivot.value);
+    },
+    [matrix]
+  );
 
   return (
     <GestureHandlerRootView>
-      <GestureDetector gesture={gesture}>{children}</GestureDetector>
+      <GestureDetector gesture={gesture}>
+        {/* @ts-expect-error onWheel */}
+        <View onWheel={onWheel}>{children}</View>
+      </GestureDetector>
     </GestureHandlerRootView>
   );
 };
