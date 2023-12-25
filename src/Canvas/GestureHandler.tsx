@@ -6,14 +6,7 @@ import {
 } from "react-native-gesture-handler";
 import type { SharedValue } from "react-native-reanimated";
 import { useSharedValue } from "react-native-reanimated";
-import {
-  applyTransform,
-  invertTransform,
-  rotateZ,
-  scale,
-  translate,
-  zoomAroundPoint,
-} from "./utils";
+import { invertTransform, rotateZ, translate, zoomAroundPoint } from "./utils";
 import { View } from "react-native";
 import { useCallback } from "react";
 
@@ -39,7 +32,7 @@ export const GestureHandler = ({ matrix, children }: GestureHandlerProps) => {
         matrix.value,
         vec(event.focalX, event.focalY)
       );
-      matrix.value = scale(offset.value, event.scale, pivot.value);
+      matrix.value = zoomAroundPoint(offset.value, event.scale, pivot.value);
     });
 
   const rotate = Gesture.Rotation()
