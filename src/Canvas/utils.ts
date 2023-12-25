@@ -3,10 +3,11 @@ import { Skia, MatrixIndex, vec } from "@shopify/react-native-skia";
 
 export const rotateZ = (matrix: SkMatrix, theta: number, origin: Vector) => {
   "worklet";
-  return Skia.Matrix(matrix.get())
+  return Skia.Matrix()
     .translate(origin.x, origin.y)
     .rotate(theta)
-    .translate(-origin.x, -origin.y);
+    .translate(-origin.x, -origin.y)
+    .concat(matrix);
 };
 
 export const translate = (matrix: SkMatrix, x: number, y: number) => {
