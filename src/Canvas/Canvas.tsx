@@ -22,7 +22,6 @@ const Container = () => {
     )
   );
 
-  console.log({ width, height });
   return (
     <GestureHandler matrix={matrix}>
       <Canvas style={{ width, height, overflow: "hidden" }}>

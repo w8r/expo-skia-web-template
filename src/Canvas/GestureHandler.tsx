@@ -35,6 +35,10 @@ export const GestureHandler = ({ matrix, children }: GestureHandlerProps) => {
       pivot.value = vec(event.focalX, event.focalY);
     })
     .onChange((event) => {
+      pivot.value = invertTransform(
+        matrix.value,
+        vec(event.focalX, event.focalY)
+      );
       matrix.value = scale(offset.value, event.scale, pivot.value);
     });
 
